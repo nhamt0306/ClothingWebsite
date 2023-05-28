@@ -4,13 +4,16 @@ import com.example.clothingstore.config.LocalVariable;
 import com.example.clothingstore.dto.ProductDTO;
 import com.example.clothingstore.config.mapper.ProductMapper;
 import com.example.clothingstore.config.mapper.ProductPagingResponse;
+import com.example.clothingstore.dto.PromptDTO;
 import com.example.clothingstore.model.CategoryEntity;
 import com.example.clothingstore.model.ElasticProduct;
 import com.example.clothingstore.model.ProductEntity;
+import com.example.clothingstore.model.TypeEntity;
 import com.example.clothingstore.security.principal.UserDetailService;
 import com.example.clothingstore.service.impl.CategoryServiceImpl;
 import com.example.clothingstore.service.impl.CommentServiceImpl;
 import com.example.clothingstore.service.impl.ProductServiceImpl;
+import com.example.clothingstore.service.impl.TypeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -20,12 +23,18 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import static co.elastic.clients.elasticsearch.ingest.ProcessorBuilders.foreach;
 
 @CrossOrigin(origins = "*")   //Để ghép AuthController với các controller khác
 @RequestMapping
 @RestController
 public class ProductController {
+    @Autowired
+    TypeServiceImpl typeService;
+
     @Autowired
     ProductServiceImpl productService;
 
@@ -391,5 +400,41 @@ public class ProductController {
                         productEntity.getImage(),
                         productEntity.getCategoryEntity().getId())
         );
+    }
+
+    @GetMapping("/product/prompt")
+    public Object searchProduct(){
+        HashMap<String, String> colorMap = new HashMap<String, String>();
+        colorMap.put("f1f1f1", "Trắng");
+        colorMap.put("000", "Đen");
+        colorMap.put("8c8c8c", "Xám");
+        colorMap.put("d9b99b", "Be");
+        colorMap.put("186287", "Xanh nước nhạt");
+        colorMap.put("114abd", "Xanh nước đậm");
+        colorMap.put("6e10a1", "Tím");
+
+        PromptDTO promptDTO = new PromptDTO();
+
+        List<ProductEntity> productEntities = productService.getAllProduct();
+        for (ProductEntity productEntity: productEntities) {
+            promptDTO.setPrompt(promptDTO.getPrompt() + "Tên sản phẩm:" + productEntity.getName().trim());
+            promptDTO.setPrompt(promptDTO.getPrompt() + ",");
+
+            List<TypeEntity> typeEntities = typeService.getAllTypeByProduct(productEntity.getId());
+            for (TypeEntity typeEntity : typeEntities) {
+                promptDTO.setPrompt(promptDTO.getPrompt() + "kích cỡ:" +  typeEntity.getSize().toString());
+                promptDTO.setPrompt(promptDTO.getPrompt() + "-");
+                promptDTO.setPrompt(promptDTO.getPrompt() + "màu:" +  colorMap.get(typeEntity.getColor().trim()));
+                promptDTO.setPrompt(promptDTO.getPrompt() + "-");
+                promptDTO.setPrompt(promptDTO.getPrompt() + "giá:" +  typeEntity.getPrice().toString());
+                promptDTO.setPrompt(promptDTO.getPrompt() + "-");
+                promptDTO.setPrompt(promptDTO.getPrompt() + "số lượng còn lại:" +  typeEntity.getQuantity());
+                if (typeEntities.indexOf(typeEntity) == typeEntities.size() - 1)
+                    promptDTO.setPrompt(promptDTO.getPrompt() + ";");
+                else
+                    promptDTO.setPrompt(promptDTO.getPrompt() + ",");
+            }
+        }
+        return ResponseEntity.ok(promptDTO);
     }
 }
