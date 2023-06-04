@@ -112,4 +112,9 @@ public class OrderServiceImpl implements OrderService {
     public Integer getAllOrderByDate(int Year, int Month, int day) {
         return orderRepository.getTotalPriceByDate(Year, Month, day);
     }
+
+    @Override
+    public Integer getRevenueBetween2Day(String startDate, String endDate) {
+        return orderRepository.totalVenueBetween2Day(startDate, endDate);
+    }
 }

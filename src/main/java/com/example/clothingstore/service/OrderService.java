@@ -27,4 +27,6 @@ public interface OrderService {
     String getAllOrderByMonth();
     String getAllOrderByYear();
     Integer getAllOrderByDate(int Year, int Month, int day);
+
+    Integer getRevenueBetween2Day(String startDate, String endDate);
 }
