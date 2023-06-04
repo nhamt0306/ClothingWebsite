@@ -1,20 +1,25 @@
 package com.example.clothingstore.dto;
 
-public class QuestionDTO {
-    private String question;
+import com.theokanning.openai.completion.chat.ChatMessage;
 
-    public QuestionDTO(String question) {
-        this.question = question;
+import java.util.List;
+
+public class QuestionDTO {
+    List<ChatMessage> messages;
+
+    public QuestionDTO(List<ChatMessage> messages) {
+        this.messages = messages;
+    }
+
+    public List<ChatMessage> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<ChatMessage> messages) {
+        this.messages = messages;
     }
 
     public QuestionDTO() {
     }
 
-    public String getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(String question) {
-        this.question = question;
-    }
 }

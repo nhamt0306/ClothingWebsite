@@ -417,24 +417,25 @@ public class ProductController {
 
         List<ProductEntity> productEntities = productService.getAllProduct();
         for (ProductEntity productEntity: productEntities) {
-            promptDTO.setPrompt(promptDTO.getPrompt() + "Tên sản phẩm:" + productEntity.getName().trim());
+            promptDTO.setPrompt(promptDTO.getPrompt() + "Tên:" + productEntity.getName().trim());
             promptDTO.setPrompt(promptDTO.getPrompt() + ",");
 
             List<TypeEntity> typeEntities = typeService.getAllTypeByProduct(productEntity.getId());
             for (TypeEntity typeEntity : typeEntities) {
-                promptDTO.setPrompt(promptDTO.getPrompt() + "kích cỡ:" +  typeEntity.getSize().toString());
+                promptDTO.setPrompt(promptDTO.getPrompt() + "size:" +  typeEntity.getSize().toString());
                 promptDTO.setPrompt(promptDTO.getPrompt() + "-");
                 promptDTO.setPrompt(promptDTO.getPrompt() + "màu:" +  colorMap.get(typeEntity.getColor().trim()));
                 promptDTO.setPrompt(promptDTO.getPrompt() + "-");
                 promptDTO.setPrompt(promptDTO.getPrompt() + "giá:" +  typeEntity.getPrice().toString());
                 promptDTO.setPrompt(promptDTO.getPrompt() + "-");
-                promptDTO.setPrompt(promptDTO.getPrompt() + "số lượng còn lại:" +  typeEntity.getQuantity());
+                promptDTO.setPrompt(promptDTO.getPrompt() + "số lượng:" +  typeEntity.getQuantity());
                 if (typeEntities.indexOf(typeEntity) == typeEntities.size() - 1)
                     promptDTO.setPrompt(promptDTO.getPrompt() + ";");
                 else
                     promptDTO.setPrompt(promptDTO.getPrompt() + ",");
             }
         }
-        return ResponseEntity.ok(promptDTO);
+//        return ResponseEntity.ok(promptDTO);
+        return ResponseEntity.ok(promptDTO.getPrompt());
     }
 }

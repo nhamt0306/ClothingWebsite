@@ -67,7 +67,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/profile/**",
                         "/recoveryPassword/*",
                         "/comment",
-                        "/questions"
+                        "/questions",
+                        "/questions/**"
                 ).permitAll()
                 .antMatchers().hasAnyRole(ADMIN.name(), USER.name()) //Các API cần đăng nhập bằng tk admin, user
                 .antMatchers("/admin/**").hasAuthority("ADMIN") //Các API cần đăng nhập bằng tk admin

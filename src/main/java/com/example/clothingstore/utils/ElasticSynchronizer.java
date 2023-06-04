@@ -41,7 +41,7 @@ public class ElasticSynchronizer {
 
     private Integer count = -1;
 
-    @Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(cron = "0 */30 * * * *")
     @Transactional
     public void sync() {
         LOG.info("Start Syncing - {}", LocalDateTime.now());
