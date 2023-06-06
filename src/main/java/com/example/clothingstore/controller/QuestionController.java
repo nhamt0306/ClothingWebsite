@@ -38,7 +38,7 @@ public class QuestionController {
                .model("gpt-3.5-turbo")
                .messages(questionDTO.getMessages())
                .n(1)
-               .maxTokens(300)
+               .maxTokens(200)
                .logitBias(new HashMap<>())
                .build();
 
